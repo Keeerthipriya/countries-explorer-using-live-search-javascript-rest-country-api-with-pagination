@@ -22,16 +22,26 @@ const ITEMS_PER_PAGE = 24;
 let showingFavorites = false; // toggle flag
 
 //Fetch data from API URL
-fetch(API_URL)
-  .then(res => res.json())
-  .then(data => {
+async function fetchCountries() {
+  try {
+    const res = await fetch(API_URL);   // waits for API response
+    const data = await res.json();      // waits for JSON conversion
+
     allCountries = data.sort((a, b) =>
       a.name.common.localeCompare(b.name.common)
     );
+
     filteredCountries = allCountries;
     render();
-  });
-
+  } catch (error) {
+    container.innerHTML = `
+      <div class="text-center text-danger mt-5">
+        <h4>Failed to load data. Please try again later.</h4>
+      </div>`;
+    console.error(error);
+  }
+}
+fetchCountries();
 
 function render() {
   container.innerHTML = "";
